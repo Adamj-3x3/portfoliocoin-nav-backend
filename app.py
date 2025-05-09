@@ -20,7 +20,7 @@ def get_nav():
         total_nav = 0
         for ticker, weight in portfolio.items():
             stock = yf.Ticker(ticker)
-            price = stock.info["regularMarketPrice"]
+            price = stock.history(period="1d")["Close"].iloc[-1]
             total_nav += price * weight
 
         return jsonify({"nav": f"${total_nav:.2f}"})
