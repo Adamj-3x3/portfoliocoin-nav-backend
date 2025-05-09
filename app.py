@@ -1,33 +1,30 @@
 from flask import Flask, jsonify
+from flask_cors import CORS
 import yfinance as yf
 
 app = Flask(__name__)
-cached_nav = {"nav": "$0.00"}
-
-PORTFOLIO = {
-    "AAPL": 0.2,
-    "MSFT": 0.2,
-    "GOOGL": 0.2,
-    "NVDA": 0.2,
-    "AMZN": 0.2,
-}
-
-def calculate_nav():
-    total = 0
-    for ticker, weight in PORTFOLIO.items():
-        price = yf.Ticker(ticker).info["regularMarketPrice"]
-        total += weight * price
-    return round(total, 2)
+CORS(app)
 
 @app.route("/nav")
 def get_nav():
-    return jsonify(cached_nav)
+    try:
+        # Example portfolio with weights
+        portfolio = {
+            "AAPL": 0.2,
+            "MSFT": 0.2,
+            "GOOGL": 0.2,
+            "AMZN": 0.2,
+            "TSLA": 0.2
+        }
 
-@app.route("/refresh")
-def refresh():
-    nav = calculate_nav()
-    cached_nav["nav"] = f"${nav}"
-    return jsonify(cached_nav)
+        total_nav = 0
+        for ticker, weight in portfolio.items():
+            stock = yf.Ticker(ticker)
+            price = stock.info["regularMarketPrice"]
+            total_nav += price * weight
 
-if __name__ == "__main__":
-    app.run(debug=False, host="0.0.0.0")
+        return jsonify({"nav": f"${total_nav:.2f}"})
+
+    except Exception as e:
+        print("Error fetching NAV:", e)
+        return jsonify({"nav": "Unavailable"})
