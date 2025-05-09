@@ -8,12 +8,14 @@ curl_cffi==0.10.0
 Flask==3.1.0
 flask-cors==5.0.1
 frozendict==2.4.6
+gunicorn==23.0.0
 idna==3.10
 itsdangerous==2.2.0
 Jinja2==3.1.6
 MarkupSafe==3.0.2
 multitasking==0.0.11
 numpy==2.2.5
+packaging==25.0
 pandas==2.2.3
 peewee==3.18.1
 platformdirs==4.3.8
