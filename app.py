@@ -3,15 +3,23 @@ from flask_cors import CORS
 import yfinance as yf
 import json
 
+# Toggle this to 'contract' in the future to switch to on-chain weights
+DATA_SOURCE = "json"
+
 app = Flask(__name__)
 CORS(app, origins=["https://portfolio-frontend-working.vercel.app"])
 
 @app.route("/nav")
 def get_nav():
     try:
-        # Load portfolio weights from JSON file
-        with open("portfolio_weights.json") as f:
-            portfolio = json.load(f)
+        if DATA_SOURCE == "json":
+            with open("portfolio_weights.json") as f:
+                portfolio = json.load(f)
+
+        elif DATA_SOURCE == "contract":
+            # Placeholder for on-chain logic (to be implemented later)
+            portfolio = {}
+            print("Smart contract integration not yet implemented.")
 
         total_nav = 0
         for ticker, weight in portfolio.items():
