@@ -1,6 +1,7 @@
 from flask import Flask, jsonify
 from flask_cors import CORS
 import yfinance as yf
+import json
 
 app = Flask(__name__)
 CORS(app, origins=["https://portfolio-frontend-working.vercel.app"])
@@ -8,13 +9,9 @@ CORS(app, origins=["https://portfolio-frontend-working.vercel.app"])
 @app.route("/nav")
 def get_nav():
     try:
-        portfolio = {
-            "AAPL": 0.2,
-            "MSFT": 0.2,
-            "GOOGL": 0.2,
-            "AMZN": 0.2,
-            "TSLA": 0.2
-        }
+        # Load portfolio weights from JSON file
+        with open("portfolio_weights.json") as f:
+            portfolio = json.load(f)
 
         total_nav = 0
         for ticker, weight in portfolio.items():
