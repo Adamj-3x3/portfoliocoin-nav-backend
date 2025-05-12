@@ -3,12 +3,11 @@ from flask_cors import CORS
 import yfinance as yf
 
 app = Flask(__name__)
-CORS(app)
+CORS(app, origins=["https://portfolio-frontend-working.vercel.app"])
 
 @app.route("/nav")
 def get_nav():
     try:
-        # Example portfolio with weights
         portfolio = {
             "AAPL": 0.2,
             "MSFT": 0.2,
@@ -20,8 +19,10 @@ def get_nav():
         total_nav = 0
         for ticker, weight in portfolio.items():
             stock = yf.Ticker(ticker)
-            price = stock.history(period="1d")["Close"].iloc[-1]
-            total_nav += price * weight
+            hist = stock.history(period="1d")
+            if not hist.empty:
+                price = hist["Close"].iloc[-1]
+                total_nav += price * weight
 
         return jsonify({"nav": f"${total_nav:.2f}"})
 
